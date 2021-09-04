@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.Foundation.Extensibility;
+using System.Threading.Tasks;
+using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.ViewManagement;
@@ -14,6 +16,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -27,12 +30,45 @@ namespace WindowManager
         INativeFoldableProvider _foldable;
         bool isFoldable = false;
 
+        private HingeAngleSensor _hinge;
+        private bool _readingChangedAttached;
+        private double _angle;
+        private string _timestamp;
+
         public MainPage()
         {
             this.InitializeComponent();
 
-            Loaded += (snd, e) => RecalculateRects();
+            Loaded += PageLoaded;
         }
+
+        async void PageLoaded(object sender, RoutedEventArgs e)
+        {
+            _hinge = await HingeAngleSensor.GetDefaultAsync();
+            if (_hinge != null)
+            {
+                hingeSensorStatus.Text = "HingeAngleSensor created";
+                _hinge.ReadingChanged += HingeAngleSensor_ReadingChanged;
+            }
+            else
+            {
+                hingeSensorStatus.Text = "HingeAngleSensor not available on this device";
+            }
+ 
+            RecalculateRects();
+        }
+
+        async void HingeAngleSensor_ReadingChanged(HingeAngleSensor sender, HingeAngleSensorReadingChangedEventArgs args)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                _angle = args.Reading.AngleInDegrees;
+                _timestamp = args.Reading.Timestamp.ToString("R");
+
+                hingeSensorStatus.Text = "HingeAngleSensor " + Math.Round(_angle,0) + "°";
+            });
+        }
+
         protected override void OnSizeChanged(int w, int h, int oldw, int oldh)
         {
             base.OnSizeChanged(w, h, oldw, oldh);
