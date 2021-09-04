@@ -31,3 +31,7 @@ Replaced the implementation of `IApplicationViewSpanningRects` with one using Wi
 ![Galaxy Fold 2 with Uno Platform and TwoPaneView in portrait](Screenshots/galaxyfold-twopaneview-port.png)
 
 ![Galaxy Fold 2 with Uno Platform and TwoPaneView in landscape](Screenshots/galaxyfold-twopaneview-land.png)
+
+## Android-only
+
+This is an Android-only sample for now... in general the code should run (as a no-op) on all the other platforms, and TwoPaneView should work fine, laying out according to its single-screen sizing rules.
