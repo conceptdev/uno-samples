@@ -15,6 +15,16 @@ using Android.Util;
 
 namespace WindowManager.Droid
 {
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <remarks>
+	/// Code to access Jetpack Window Manager features from Xamarin.AndroidX.Window.WindowJava NuGet
+	/// from https://github.com/microsoft/surface-duo-sdk-xamarin-samples/tree/main/WindowManager
+	/// Public properties exposed here are consumed by FoldableApplicationViewSpanningRects
+	/// which implements IApplicationViewSpanningRects, the interface that is loaded and
+	/// used by TwoPaneView
+	/// </remarks>
 	[Activity(
 			MainLauncher = true,
 			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
@@ -26,12 +36,14 @@ namespace WindowManager.Droid
 		WindowInfoRepositoryCallbackAdapter wir;
 		IWindowMetricsCalculator wmc;
 
+		// HACK: expose properties for FoldableApplicationViewSpanningRects
 		public bool IsSeparating = false;
 		public SurfaceOrientation Orientation = SurfaceOrientation.Rotation0;
 		public Android.Graphics.Rect FoldBounds;
 		public FoldingFeatureState FoldState;
 		public FoldingFeatureOcclusionType FoldOcclusionType;
 		public FoldingFeatureOrientation FoldOrientation;
+		// ENDHACK
 
 		protected override void OnCreate(Bundle bundle)
         {
@@ -69,6 +81,7 @@ namespace WindowManager.Droid
 
 				if (foldingFeature != null) // HACK: requires JavaCast as shown above
 				{
+					// Set properties for FoldableApplicationViewSpanningRects to reference
 					IsSeparating = foldingFeature.IsSeparating;
 					FoldBounds = foldingFeature.Bounds;
 					FoldState = foldingFeature.State;

@@ -8,8 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.Foundation;
@@ -20,6 +18,15 @@ using Uno.UI;
 
 namespace WindowManager.Droid
 {
+	/// <summary>
+	/// Provides two Rect that represent the two screen dimensions when
+	/// an Android application is spanned across a hinge or fold (eg. Surface Duo)
+	/// </summary>
+	/// <remarks>
+	/// Relies on the MainActivity implementing Jetpack Window Manager layout change listener,
+	/// and exposing the properties needed to make UI change when required.
+	/// HACK: need to implement an event for layout changes, so we can detect folding state
+	/// </remarks>
     public class FoldableApplicationViewSpanningRects : IApplicationViewSpanningRects, INativeDualScreenProvider, INativeFoldableProvider
 	{
 		private (SurfaceOrientation orientation, List<Rect> result) _previousMode = EmptyMode;
@@ -240,7 +247,7 @@ namespace WindowManager.Droid
 			}
 		}
 
-		[Obsolete("Use IsSpanned, knowing a device is 'dual screen' is irrelevant unless the app is spanned anyway")]
+		[Obsolete("Prefer IsSpanned, since it provides a better experience on non-occluding folding features")]
 		public bool IsDualScreen
 		{
 			get
@@ -250,7 +257,7 @@ namespace WindowManager.Droid
 					throw new InvalidOperationException("The API was called too early in the application lifecycle");
 				}
 
-				return currentActivity.IsSeparating;
+				return currentActivity.FoldBounds != null;
 			}
 		}
 
@@ -290,5 +297,20 @@ namespace WindowManager.Droid
 				return true;
 			}
 		}
-	}
+
+        public Rect Bounds
+        {
+			get {
+				if (ContextHelper.Current is MainActivity currentActivity && currentActivity.FoldBounds != null)
+				{
+					return new Rect(currentActivity.FoldBounds.Left,
+						currentActivity.FoldBounds.Top,
+						currentActivity.FoldBounds.Width(),
+						currentActivity.FoldBounds.Height());
+				}
+
+				return new Rect(0,0,0,0);
+			}
+		}
+    }
 }

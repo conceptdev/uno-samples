@@ -37,8 +37,10 @@ using WindowManager;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 
-
-
-// Jetpack Window Manager - TODO these aren't working
+// Jetpack Window Manager - TODO these aren't working, see manual setup in **App.xaml.cs**
+// Could be as simple as "not in a NuGet package", according to
+// https://platform.uno/docs/articles/uno-development/api-extensions.html
+// which suggests these are only generated in App.InitializeComponent() when found in a NuGet
+// (and not in the current application, as in this case)...
 [assembly: ApiExtension(typeof(IApplicationViewSpanningRects), typeof(FoldableApplicationViewSpanningRects))]
 [assembly: ApiExtension(typeof(INativeFoldableProvider), typeof(FoldableApplicationViewSpanningRects))]

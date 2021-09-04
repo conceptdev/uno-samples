@@ -50,8 +50,10 @@ namespace WindowManager
         }
         private async void RecalculateRects()
         {
-            text.Text = "-";
+            text.Text = "Single screen (not spanned)";
+
 #if __ANDROID__
+            // None of this is really Android specific, but we know it's a no-op on other platforms so...
             var spanningRects = ApplicationView.GetForCurrentView().GetSpanningRects();
             if (spanningRects == null || spanningRects.Count == 0)
             {
@@ -74,6 +76,11 @@ namespace WindowManager
                 });
             }
 #endif
+        }
+
+        void TwoPaneView_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(TwoPanePage));
         }
     }
 }

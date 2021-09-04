@@ -7,18 +7,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+          Margin="20">
         <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
             <RowDefinition Height="5*" />
         </Grid.RowDefinitions>
 		<TextBlock Grid.Row="0"
-                   Text="Window Manager" 
-                   Margin="20"
+                   Text="Window Manager for Uno" 
                    FontSize="30" />
-        <TextBlock x:Name="text" Grid.Row="1"
-                   Text="-" 
-                   Margin="20"
+        <Button Grid.Row="1"
+                Click="TwoPaneView_Click">TwoPaneView</Button>
+        <TextBlock x:Name="text" Grid.Row="2"
+                   Text="Single screen (not spanned)" 
                    FontSize="30" />
     </Grid>
 </Page>
