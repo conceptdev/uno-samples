@@ -1,0 +1,41 @@
+﻿<Page
+    x:Class="WindowManager.TwoPanePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WindowManager"
+    xmlns:muxcontrols="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <muxcontrols:TwoPaneView>
+        <muxcontrols:TwoPaneView.Pane1>
+            <Grid Background="Yellow"
+                  Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0"
+                    Text="TwoPaneView.Pane1"
+                    Margin="20"
+                    FontSize="30"/>
+                <Button Grid.Row="1"
+                    Click="MainPage_Click">Main</Button>
+            </Grid>
+        </muxcontrols:TwoPaneView.Pane1>
+        <muxcontrols:TwoPaneView.Pane2>
+            <Grid Background="LightBlue">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock 
+                    Text="TwoPaneView.Pane2"
+                    FontSize="30" />
+               </Grid>
+        </muxcontrols:TwoPaneView.Pane2>
+    </muxcontrols:TwoPaneView>
+</Page>
