@@ -44,7 +44,7 @@ namespace WindowManager.Droid
 		{
 			if (ContextHelper.Current is MainActivity currentActivity)
 			{
-				if (currentActivity.IsSeparating) // or just "is fold present?" - changing this will affect the behavior of TwoPaneView on foldable devices
+				if (currentActivity.HasFoldFeature) // IsSeparating or just "is fold present?" - changing this will affect the behavior of TwoPaneView on foldable devices
 				{
                     _previousMode.orientation = currentActivity.Orientation;
                     _previousMode.result = null;
@@ -72,7 +72,8 @@ namespace WindowManager.Droid
                         var occludedRect = occludedRects[0];
                         var intersecting = ((Android.Graphics.RectF)bounds).Intersect(occludedRect);
 
-                        if (wuOrientation == DisplayOrientations.Portrait || wuOrientation == DisplayOrientations.PortraitFlipped)
+						//if (wuOrientation == DisplayOrientations.Portrait || wuOrientation == DisplayOrientations.PortraitFlipped)  // *Device* portrait assumption works for Surface Duo, but not other foldables which have a vertical hinge in portrait mode
+						if (currentActivity.FoldOrientation == AndroidX.Window.Layout.FoldingFeatureOrientation.Horizontal)
                         {
                             // Compensate for the status bar size (the occluded area is rooted on the screen size, whereas
                             // wuxWindowBoundsis rooted on the visible size of the window, unless the status bar is translucent.
@@ -213,7 +214,7 @@ namespace WindowManager.Droid
 					throw new InvalidOperationException("The API was called too early in the application lifecycle");
 				}
 
-				return currentActivity.FoldBounds != null;
+				return currentActivity.HasFoldFeature;
 			}
 		}
 

@@ -37,6 +37,7 @@ namespace WindowManager.Droid
 		IWindowMetricsCalculator wmc;
 
 		// HACK: expose properties for FoldableApplicationViewSpanningRects
+		public bool HasFoldFeature = false;
 		public bool IsSeparating = false;
 		public SurfaceOrientation Orientation = SurfaceOrientation.Rotation0;
 		public Android.Graphics.Rect FoldBounds;
@@ -69,12 +70,10 @@ namespace WindowManager.Droid
 			Log.Info(TAG, "Current: " + wmc.ComputeCurrentWindowMetrics(this).Bounds.ToString());
 			Log.Info(TAG, "Current: " + wmc.ComputeMaximumWindowMetrics(this).Bounds.ToString());
 
-			if (newLayoutInfo.DisplayFeatures.Count == 0)
-			{	// HACK: only works if no other feature types (eg. cutout)
-				Log.Info(TAG, "One logic/physical display - unspanned");
-				FoldBounds = null;
-				IsSeparating = false;
-			}
+			FoldBounds = null;
+			IsSeparating = false;
+			HasFoldFeature = false;
+			
 			foreach (var displayFeature in newLayoutInfo.DisplayFeatures)
 			{
 				var foldingFeature = displayFeature.JavaCast<IFoldingFeature>();
@@ -82,6 +81,7 @@ namespace WindowManager.Droid
 				if (foldingFeature != null) // HACK: requires JavaCast as shown above
 				{
 					// Set properties for FoldableApplicationViewSpanningRects to reference
+					HasFoldFeature = true;
 					IsSeparating = foldingFeature.IsSeparating;
 					FoldBounds = foldingFeature.Bounds;
 					FoldState = foldingFeature.State;
