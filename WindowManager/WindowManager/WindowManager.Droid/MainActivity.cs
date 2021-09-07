@@ -1,33 +1,29 @@
 ﻿using Android.App;
-using Android.Widget;
 using Android.OS;
-using Android.Content.PM;
+using Android.Util;
 using Android.Views;
-
-using AndroidX.AppCompat.App;
 using AndroidX.Core.Util;
-using AndroidX.Window.Layout;
 using AndroidX.Window.Java.Layout;
+using AndroidX.Window.Layout;
+using Java.Interop;
 using Java.Lang;
 using Java.Util.Concurrent;
-using Java.Interop;
-using Android.Util;
 using System;
 using Windows.UI.ViewManagement;
 
 namespace WindowManager.Droid
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <remarks>
-	/// Code to access Jetpack Window Manager features from Xamarin.AndroidX.Window.WindowJava NuGet
-	/// from https://github.com/microsoft/surface-duo-sdk-xamarin-samples/tree/main/WindowManager
-	/// Public properties exposed here are consumed by FoldableApplicationViewSpanningRects
-	/// which implements IApplicationViewSpanningRects, the interface that is loaded and
-	/// used by TwoPaneView
-	/// </remarks>
-	[Activity(
+    /// <summary>
+    /// This activity contains a lot of foldable-specific stuff that we need to refactor out
+    /// </summary>
+    /// <remarks>
+    /// Code to access Jetpack Window Manager features from Xamarin.AndroidX.Window.WindowJava NuGet
+    /// from https://github.com/microsoft/surface-duo-sdk-xamarin-samples/tree/main/WindowManager
+    /// Public properties exposed here are consumed by FoldableApplicationViewSpanningRects
+    /// which implements IApplicationViewSpanningRects, the interface that is loaded and
+    /// used by TwoPaneView
+    /// </remarks>
+    [Activity(
 			MainLauncher = true,
 			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
@@ -48,8 +44,21 @@ namespace WindowManager.Droid
 		public FoldingFeatureState FoldState;
 		public FoldingFeatureOcclusionType FoldOcclusionType;
 		public FoldingFeatureOrientation FoldOrientation;
-		// ENDHACK
 
+		private EventHandler<NativeFold> _layoutChanged;
+		// ENDHACK
+		public event EventHandler<NativeFold> LayoutChanged
+		{
+			add
+			{
+				var isFirstSubscriber = _layoutChanged == null;
+				_layoutChanged += value;
+			}
+			remove
+			{
+				_layoutChanged -= value;
+			}
+		}
 		protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -77,7 +86,9 @@ namespace WindowManager.Droid
 			FoldBounds = null;
 			IsSeparating = false;
 			HasFoldFeature = false;
-			
+
+			NativeFold lastFoldingFeature = null;
+
 			foreach (var displayFeature in newLayoutInfo.DisplayFeatures)
 			{
 				var foldingFeature = displayFeature.JavaCast<IFoldingFeature>();
@@ -90,6 +101,7 @@ namespace WindowManager.Droid
 					FoldBounds = foldingFeature.Bounds;
 					FoldState = foldingFeature.State;
 					FoldOcclusionType = foldingFeature.OcclusionType;
+
 					if (foldingFeature.Orientation == FoldingFeatureOrientation.Horizontal)
 					{
 						//Orientation = SurfaceOrientation.Rotation90;
@@ -102,6 +114,11 @@ namespace WindowManager.Droid
 						IsFoldVertical = true;
 						FoldOrientation = FoldingFeatureOrientation.Vertical;
 					}
+
+					lastFoldingFeature = new NativeFold { Bounds = FoldBounds, 
+						IsOccluding = foldingFeature.OcclusionType == FoldingFeatureOcclusionType.Full, 
+						IsFlat = foldingFeature.State == FoldingFeatureState.Flat, 
+						IsVertical = IsFoldVertical };
 					// DEBUG INFO
 					if (foldingFeature.OcclusionType == FoldingFeatureOcclusionType.None)
 					{
@@ -121,6 +138,9 @@ namespace WindowManager.Droid
 					Log.Info(TAG, "DisplayFeature is not a fold or hinge");
 				}
 			}
+
+
+			_layoutChanged?.Invoke(this, lastFoldingFeature);
 		}
 		#region Used by WindowInfoRepository callback
 		IExecutor runOnUiThreadExecutor()

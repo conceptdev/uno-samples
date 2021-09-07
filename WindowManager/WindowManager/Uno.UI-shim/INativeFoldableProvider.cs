@@ -38,5 +38,7 @@ namespace Windows.UI.ViewManagement
         /// false=FoldingFeatureOrientation.Horizontal
         /// </summary>
         bool IsVertical { get; }
+
+        
     }
 }

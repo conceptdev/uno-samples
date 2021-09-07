@@ -1,32 +1,24 @@
-﻿using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
+﻿using Android.Views;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Uno.Devices.Sensors;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
-using Uno.Devices.Sensors;
-using Uno.UI;
 
 namespace Uno.UI.Foldable
 {
-	/// <summary>
-	/// Provides two Rect that represent the two screen dimensions when
-	/// an Android application is spanned across a hinge or fold (eg. Surface Duo)
-	/// </summary>
-	/// <remarks>
-	/// Relies on the MainActivity implementing Jetpack Window Manager layout change listener,
-	/// and exposing the properties needed to make UI change when required.
-	/// HACK: need to implement an event for layout changes, so we can detect folding state
-	/// </remarks>
+    /// <summary>
+    /// Provides two Rect that represent the two screen dimensions when
+    /// an Android application is spanned across a hinge or fold (eg. Surface Duo)
+    /// </summary>
+    /// <remarks>
+    /// Relies on the MainActivity implementing Jetpack Window Manager layout change listener,
+    /// and exposing the properties needed to make UI change when required.
+    /// HACK: need to implement an event for layout changes, so we can detect folding state
+    /// </remarks>
     public class FoldableApplicationViewSpanningRects : IApplicationViewSpanningRects, INativeDualScreenProvider, INativeFoldableProvider
 	{
 		private (SurfaceOrientation orientation, List<Rect> result) _previousMode = EmptyMode;

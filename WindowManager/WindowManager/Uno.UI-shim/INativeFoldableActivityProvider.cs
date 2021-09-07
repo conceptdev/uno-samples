@@ -10,5 +10,7 @@ namespace Windows.UI.ViewManagement
         bool IsSeparating { get; }
         bool IsFoldVertical { get; }
         Android.Graphics.Rect FoldBounds { get; }
+
+        event EventHandler<NativeFold> LayoutChanged;
     }
 }

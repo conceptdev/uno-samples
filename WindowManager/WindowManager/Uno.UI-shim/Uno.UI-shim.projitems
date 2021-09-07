@@ -11,5 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)INativeFoldableActivityProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)INativeFoldableProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NativeFold.cs" />
   </ItemGroup>
 </Project>
