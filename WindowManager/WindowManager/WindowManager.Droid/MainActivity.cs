@@ -31,15 +31,15 @@ namespace WindowManager.Droid
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity, INativeFoldableActivityProvider, IConsumer
 	{
 		const string TAG = "JWM"; // Jetpack Window Manager
-		WindowInfoRepositoryCallbackAdapter wir;
-		IWindowMetricsCalculator wmc;
+		WindowInfoRepositoryCallbackAdapter windowInfoRepository;
+		IWindowMetricsCalculator windowMetricsCalculator;
 
 		// HACK: expose properties for FoldableApplicationViewSpanningRects
 		public bool HasFoldFeature { get; set; }
 		public bool IsSeparating { get; set; }
 		public bool IsFoldVertical { get; set; }
 		public Android.Graphics.Rect FoldBounds { get; set; }
-		[Obsolete("Can't surface this in a platform agnostic way")]
+		[Obsolete("Can't surface this in a platform agnostic way, not sure we need it when we have FoldOrientation via Window Manager")]
 		public SurfaceOrientation Orientation = SurfaceOrientation.Rotation0;
 		public FoldingFeatureState FoldState;
 		public FoldingFeatureOcclusionType FoldOcclusionType;
@@ -51,7 +51,6 @@ namespace WindowManager.Droid
 		{
 			add
 			{
-				var isFirstSubscriber = _layoutChanged == null;
 				_layoutChanged += value;
 			}
 			remove
@@ -62,26 +61,26 @@ namespace WindowManager.Droid
 		protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-			wir = new WindowInfoRepositoryCallbackAdapter(WindowInfoRepository.Companion.GetOrCreate(this));
-			wmc = WindowMetricsCalculator.Companion.OrCreate; // HACK: source method is `getOrCreate`, binding generator munges this badly :(
+			windowInfoRepository = new WindowInfoRepositoryCallbackAdapter(WindowInfoRepository.Companion.GetOrCreate(this));
+			windowMetricsCalculator = WindowMetricsCalculator.Companion.OrCreate; // HACK: source method is `getOrCreate`, binding generator munges this badly :(
 		}
 
 		protected override void OnStart()
 		{
 			base.OnStart();
-			wir.AddWindowLayoutInfoListener(runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
+			windowInfoRepository.AddWindowLayoutInfoListener(runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
 		}
 
 		protected override void OnStop()
 		{
 			base.OnStop();
-			wir.RemoveWindowLayoutInfoListener(this);
+			windowInfoRepository.RemoveWindowLayoutInfoListener(this);
 		}
 
 		void layoutStateChange(WindowLayoutInfo newLayoutInfo)
 		{
-			Log.Info(TAG, "Current: " + wmc.ComputeCurrentWindowMetrics(this).Bounds.ToString());
-			Log.Info(TAG, "Current: " + wmc.ComputeMaximumWindowMetrics(this).Bounds.ToString());
+			Log.Info(TAG, "Current: " + windowMetricsCalculator.ComputeCurrentWindowMetrics(this).Bounds.ToString());
+			Log.Info(TAG, "Maximum: " + windowMetricsCalculator.ComputeMaximumWindowMetrics(this).Bounds.ToString());
 
 			FoldBounds = null;
 			IsSeparating = false;
