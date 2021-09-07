@@ -1,0 +1,4 @@
+<resources>
+    <string name="hello">Hello World, Click Me!</string>
+    <string name="app_name">Uno.UI.Foldable</string>
+</resources>

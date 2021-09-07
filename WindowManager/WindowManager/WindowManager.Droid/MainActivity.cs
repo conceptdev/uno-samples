@@ -12,6 +12,8 @@ using Java.Lang;
 using Java.Util.Concurrent;
 using Java.Interop;
 using Android.Util;
+using System;
+using Windows.UI.ViewManagement;
 
 namespace WindowManager.Droid
 {
@@ -30,17 +32,19 @@ namespace WindowManager.Droid
 			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]
-	public class MainActivity : Windows.UI.Xaml.ApplicationActivity, IConsumer
+	public class MainActivity : Windows.UI.Xaml.ApplicationActivity, INativeFoldableActivityProvider, IConsumer
 	{
 		const string TAG = "JWM"; // Jetpack Window Manager
 		WindowInfoRepositoryCallbackAdapter wir;
 		IWindowMetricsCalculator wmc;
 
 		// HACK: expose properties for FoldableApplicationViewSpanningRects
-		public bool HasFoldFeature = false;
-		public bool IsSeparating = false;
+		public bool HasFoldFeature { get; set; }
+		public bool IsSeparating { get; set; }
+		public bool IsFoldVertical { get; set; }
+		public Android.Graphics.Rect FoldBounds { get; set; }
+		[Obsolete("Can't surface this in a platform agnostic way")]
 		public SurfaceOrientation Orientation = SurfaceOrientation.Rotation0;
-		public Android.Graphics.Rect FoldBounds;
 		public FoldingFeatureState FoldState;
 		public FoldingFeatureOcclusionType FoldOcclusionType;
 		public FoldingFeatureOrientation FoldOrientation;
@@ -88,12 +92,14 @@ namespace WindowManager.Droid
 					FoldOcclusionType = foldingFeature.OcclusionType;
 					if (foldingFeature.Orientation == FoldingFeatureOrientation.Horizontal)
 					{
-						Orientation = SurfaceOrientation.Rotation90;
+						//Orientation = SurfaceOrientation.Rotation90;
+						IsFoldVertical = false;
 						FoldOrientation = FoldingFeatureOrientation.Horizontal;
 					}
 					else
 					{
-						Orientation = SurfaceOrientation.Rotation0; // HACK: what about 180 and 270?
+						//Orientation = SurfaceOrientation.Rotation0; // HACK: what about 180 and 270?
+						IsFoldVertical = true;
 						FoldOrientation = FoldingFeatureOrientation.Vertical;
 					}
 					// DEBUG INFO
