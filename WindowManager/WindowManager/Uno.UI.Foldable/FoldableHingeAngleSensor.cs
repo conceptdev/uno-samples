@@ -1,33 +1,26 @@
 ﻿using Android.App;
-using Android.Content;
-using Android.OS;
 using Android.Hardware;
+using Android.OS;
 using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Uno.Devices.Sensors;
 using Uno.Devices.Sensors.Helpers;
-using Windows.Devices.Sensors;
-using Uno.UI;
 
-namespace WindowManager.Droid
+namespace Uno.UI.Foldable
 {
-	/// <summary>
-	/// Uses sensor manager to listen for hinge or fold angle changes
-	/// </summary>
-	/// <remarks>
-	/// Some code from 
-	/// https://github.com/xamarin/XamarinComponents/blob/main/Android/SurfaceDuo/source/SurfaceDuo/Additions/HingeSensor.cs
-	/// 
-	/// Choosing the sensor by "name contains 'hinge'" is a little rough - 
-	/// Android 30 and higher introduces a hinge sensor constant `android.sensor.hinge_angle`
-	/// https://developer.android.com/reference/android/hardware/Sensor#STRING_TYPE_HINGE_ANGLE
-	/// </remarks>
-	public class FoldableHingeAngleSensor : INativeHingeAngleSensor
+    /// <summary>
+    /// Uses sensor manager to listen for hinge or fold angle changes
+    /// </summary>
+    /// <remarks>
+    /// Some code from 
+    /// https://github.com/xamarin/XamarinComponents/blob/main/Android/SurfaceDuo/source/SurfaceDuo/Additions/HingeSensor.cs
+    /// 
+    /// Choosing the sensor by "name contains 'hinge'" is a little rough - 
+    /// Android 30 and higher introduces a hinge sensor constant `android.sensor.hinge_angle`
+    /// https://developer.android.com/reference/android/hardware/Sensor#STRING_TYPE_HINGE_ANGLE
+    /// </remarks>
+    public class FoldableHingeAngleSensor : INativeHingeAngleSensor
     {
 		//const string HINGE_SENSOR_TYPE = "microsoft.sensor.hinge_angle"; // Surface Duo specific
 		//const string HINGE_SENSOR_TYPE = "android.sensor.hinge_angle"; // API 30 - future use

@@ -39,13 +39,6 @@ namespace WindowManager
             InitializeLogging();
 
             this.InitializeComponent();
-#if __ANDROID__
-            // HACK: need to get the DI working from the attribute in AssemblyInfo.cs
-            // Might need to move all this code to a project/NuGet? https://platform.uno/docs/articles/uno-development/api-extensions.html
-            global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(global::Windows.UI.ViewManagement.IApplicationViewSpanningRects), o => new WindowManager.Droid.FoldableApplicationViewSpanningRects(o));
-            global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(WindowManager.INativeFoldableProvider), o => new WindowManager.Droid.FoldableApplicationViewSpanningRects(o));
-            global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(global::Uno.Devices.Sensors.INativeHingeAngleSensor), o => new WindowManager.Droid.FoldableHingeAngleSensor(o));
-#endif
 
 #if HAS_UNO || NETFX_CORE
             this.Suspending += OnSuspending;

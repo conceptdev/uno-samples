@@ -1,79 +1,93 @@
 ﻿using Android.App;
-using Android.Widget;
 using Android.OS;
-using Android.Content.PM;
+using Android.Util;
 using Android.Views;
-
-using AndroidX.AppCompat.App;
 using AndroidX.Core.Util;
-using AndroidX.Window.Layout;
 using AndroidX.Window.Java.Layout;
+using AndroidX.Window.Layout;
+using Java.Interop;
 using Java.Lang;
 using Java.Util.Concurrent;
-using Java.Interop;
-using Android.Util;
+using System;
+using Windows.UI.ViewManagement;
 
 namespace WindowManager.Droid
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <remarks>
-	/// Code to access Jetpack Window Manager features from Xamarin.AndroidX.Window.WindowJava NuGet
-	/// from https://github.com/microsoft/surface-duo-sdk-xamarin-samples/tree/main/WindowManager
-	/// Public properties exposed here are consumed by FoldableApplicationViewSpanningRects
-	/// which implements IApplicationViewSpanningRects, the interface that is loaded and
-	/// used by TwoPaneView
-	/// </remarks>
-	[Activity(
+    /// <summary>
+    /// This activity contains a lot of foldable-specific stuff that we need to refactor out
+    /// </summary>
+    /// <remarks>
+    /// Code to access Jetpack Window Manager features from Xamarin.AndroidX.Window.WindowJava NuGet
+    /// from https://github.com/microsoft/surface-duo-sdk-xamarin-samples/tree/main/WindowManager
+    /// Public properties exposed here are consumed by FoldableApplicationViewSpanningRects
+    /// which implements IApplicationViewSpanningRects, the interface that is loaded and
+    /// used by TwoPaneView
+    /// </remarks>
+    [Activity(
 			MainLauncher = true,
 			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]
-	public class MainActivity : Windows.UI.Xaml.ApplicationActivity, IConsumer
+	public class MainActivity : Windows.UI.Xaml.ApplicationActivity, INativeFoldableActivityProvider, IConsumer
 	{
 		const string TAG = "JWM"; // Jetpack Window Manager
-		WindowInfoRepositoryCallbackAdapter wir;
-		IWindowMetricsCalculator wmc;
+		WindowInfoRepositoryCallbackAdapter windowInfoRepository;
+		IWindowMetricsCalculator windowMetricsCalculator;
 
 		// HACK: expose properties for FoldableApplicationViewSpanningRects
-		public bool HasFoldFeature = false;
-		public bool IsSeparating = false;
+		public bool HasFoldFeature { get; set; }
+		public bool IsSeparating { get; set; }
+		public bool IsFoldVertical { get; set; }
+		public Android.Graphics.Rect FoldBounds { get; set; }
+		[Obsolete("Can't surface this in a platform agnostic way, not sure we need it when we have FoldOrientation via Window Manager")]
 		public SurfaceOrientation Orientation = SurfaceOrientation.Rotation0;
-		public Android.Graphics.Rect FoldBounds;
 		public FoldingFeatureState FoldState;
 		public FoldingFeatureOcclusionType FoldOcclusionType;
 		public FoldingFeatureOrientation FoldOrientation;
-		// ENDHACK
 
+		private EventHandler<NativeFold> _layoutChanged;
+		// ENDHACK
+		public event EventHandler<NativeFold> LayoutChanged
+		{
+			add
+			{
+				_layoutChanged += value;
+			}
+			remove
+			{
+				_layoutChanged -= value;
+			}
+		}
 		protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-			wir = new WindowInfoRepositoryCallbackAdapter(WindowInfoRepository.Companion.GetOrCreate(this));
-			wmc = WindowMetricsCalculator.Companion.OrCreate; // HACK: source method is `getOrCreate`, binding generator munges this badly :(
+			windowInfoRepository = new WindowInfoRepositoryCallbackAdapter(WindowInfoRepository.Companion.GetOrCreate(this));
+			windowMetricsCalculator = WindowMetricsCalculator.Companion.OrCreate; // HACK: source method is `getOrCreate`, binding generator munges this badly :(
 		}
 
 		protected override void OnStart()
 		{
 			base.OnStart();
-			wir.AddWindowLayoutInfoListener(runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
+			windowInfoRepository.AddWindowLayoutInfoListener(runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
 		}
 
 		protected override void OnStop()
 		{
 			base.OnStop();
-			wir.RemoveWindowLayoutInfoListener(this);
+			windowInfoRepository.RemoveWindowLayoutInfoListener(this);
 		}
 
 		void layoutStateChange(WindowLayoutInfo newLayoutInfo)
 		{
-			Log.Info(TAG, "Current: " + wmc.ComputeCurrentWindowMetrics(this).Bounds.ToString());
-			Log.Info(TAG, "Current: " + wmc.ComputeMaximumWindowMetrics(this).Bounds.ToString());
+			Log.Info(TAG, "Current: " + windowMetricsCalculator.ComputeCurrentWindowMetrics(this).Bounds.ToString());
+			Log.Info(TAG, "Maximum: " + windowMetricsCalculator.ComputeMaximumWindowMetrics(this).Bounds.ToString());
 
 			FoldBounds = null;
 			IsSeparating = false;
 			HasFoldFeature = false;
-			
+
+			NativeFold lastFoldingFeature = null;
+
 			foreach (var displayFeature in newLayoutInfo.DisplayFeatures)
 			{
 				var foldingFeature = displayFeature.JavaCast<IFoldingFeature>();
@@ -86,16 +100,24 @@ namespace WindowManager.Droid
 					FoldBounds = foldingFeature.Bounds;
 					FoldState = foldingFeature.State;
 					FoldOcclusionType = foldingFeature.OcclusionType;
+
 					if (foldingFeature.Orientation == FoldingFeatureOrientation.Horizontal)
 					{
-						Orientation = SurfaceOrientation.Rotation90;
+						//Orientation = SurfaceOrientation.Rotation90;
+						IsFoldVertical = false;
 						FoldOrientation = FoldingFeatureOrientation.Horizontal;
 					}
 					else
 					{
-						Orientation = SurfaceOrientation.Rotation0; // HACK: what about 180 and 270?
+						//Orientation = SurfaceOrientation.Rotation0; // HACK: what about 180 and 270?
+						IsFoldVertical = true;
 						FoldOrientation = FoldingFeatureOrientation.Vertical;
 					}
+
+					lastFoldingFeature = new NativeFold { Bounds = FoldBounds, 
+						IsOccluding = foldingFeature.OcclusionType == FoldingFeatureOcclusionType.Full, 
+						IsFlat = foldingFeature.State == FoldingFeatureState.Flat, 
+						IsVertical = IsFoldVertical };
 					// DEBUG INFO
 					if (foldingFeature.OcclusionType == FoldingFeatureOcclusionType.None)
 					{
@@ -115,6 +137,9 @@ namespace WindowManager.Droid
 					Log.Info(TAG, "DisplayFeature is not a fold or hinge");
 				}
 			}
+
+
+			_layoutChanged?.Invoke(this, lastFoldingFeature);
 		}
 		#region Used by WindowInfoRepository callback
 		IExecutor runOnUiThreadExecutor()

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Uno.Foundation.Extensibility;
 using System.Threading.Tasks;
 using Windows.Devices.Sensors;
 using Windows.Foundation;
@@ -17,6 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Core;
+using Uno.Foundation.Extensibility;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -28,18 +28,29 @@ namespace WindowManager
     public sealed partial class MainPage : Page
     {
         INativeFoldableProvider _foldable;
+        INativeFoldableActivityProvider _foldableActivity;
         bool isFoldable = false;
 
         private HingeAngleSensor _hinge;
         private bool _readingChangedAttached;
         private double _angle;
         private string _timestamp;
+        
 
         public MainPage()
         {
             this.InitializeComponent();
 
             Loaded += PageLoaded;
+
+            if (Uno.UI.ContextHelper.Current is INativeFoldableActivityProvider currentActivity) {
+                _foldableActivity = (INativeFoldableActivityProvider)currentActivity;
+                _foldableActivity.LayoutChanged += async (sender, newLayout) =>
+                {
+                    _foldable = newLayout;
+                    RecalculateRects(); // re-display info on screen
+                };
+            }
         }
 
         async void PageLoaded(object sender, RoutedEventArgs e)
@@ -86,7 +97,7 @@ namespace WindowManager
         }
         private async void RecalculateRects()
         {
-            text.Text = "Single screen (not spanned)";
+            text.Text = "Single screen (not spanned)"; // HACK: this causes a flicker when the screen updates via the event handler
 
 #if __ANDROID__
             // None of this is really Android specific, but we know it's a no-op on other platforms so...

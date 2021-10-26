@@ -1,32 +1,24 @@
-﻿using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
+﻿using Android.Views;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Uno.Devices.Sensors;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
-using Uno.Devices.Sensors;
-using Uno.UI;
 
-namespace WindowManager.Droid
+namespace Uno.UI.Foldable
 {
-	/// <summary>
-	/// Provides two Rect that represent the two screen dimensions when
-	/// an Android application is spanned across a hinge or fold (eg. Surface Duo)
-	/// </summary>
-	/// <remarks>
-	/// Relies on the MainActivity implementing Jetpack Window Manager layout change listener,
-	/// and exposing the properties needed to make UI change when required.
-	/// HACK: need to implement an event for layout changes, so we can detect folding state
-	/// </remarks>
+    /// <summary>
+    /// Provides two Rect that represent the two screen dimensions when
+    /// an Android application is spanned across a hinge or fold (eg. Surface Duo)
+    /// </summary>
+    /// <remarks>
+    /// Relies on the MainActivity implementing Jetpack Window Manager layout change listener,
+    /// and exposing the properties needed to make UI change when required.
+    /// HACK: need to implement an event for layout changes, so we can detect folding state
+    /// </remarks>
     public class FoldableApplicationViewSpanningRects : IApplicationViewSpanningRects, INativeDualScreenProvider, INativeFoldableProvider
 	{
 		private (SurfaceOrientation orientation, List<Rect> result) _previousMode = EmptyMode;
@@ -42,11 +34,11 @@ namespace WindowManager.Droid
 
 		public IReadOnlyList<Rect> GetSpanningRects()
 		{
-			if (ContextHelper.Current is MainActivity currentActivity)
+			if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity)
 			{
 				if (currentActivity.HasFoldFeature) // IsSeparating or just "is fold present?" - changing this will affect the behavior of TwoPaneView on foldable devices
 				{
-                    _previousMode.orientation = currentActivity.Orientation;
+// HACK: needed?                    _previousMode.orientation = currentActivity.Orientation;
                     _previousMode.result = null;
 
                     var wuxWindowBounds = ApplicationView.GetForCurrentView().VisibleBounds.LogicalToPhysicalPixels();
@@ -73,7 +65,7 @@ namespace WindowManager.Droid
                         var intersecting = ((Android.Graphics.RectF)bounds).Intersect(occludedRect);
 
 						//if (wuOrientation == DisplayOrientations.Portrait || wuOrientation == DisplayOrientations.PortraitFlipped)  // *Device* portrait assumption works for Surface Duo, but not other foldables which have a vertical hinge in portrait mode
-						if (currentActivity.FoldOrientation == AndroidX.Window.Layout.FoldingFeatureOrientation.Horizontal)
+						if (currentActivity.IsFoldVertical == false) // FoldOrientation == AndroidX.Window.Layout.FoldingFeatureOrientation.Horizontal)
                         {
                             // Compensate for the status bar size (the occluded area is rooted on the screen size, whereas
                             // wuxWindowBoundsis rooted on the visible size of the window, unless the status bar is translucent.
@@ -195,7 +187,7 @@ namespace WindowManager.Droid
 		{
 			get
 			{
-				if (ContextHelper.Current is MainActivity currentActivity)
+				if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity)
 				{
 					return currentActivity.IsSeparating;
 				}
@@ -209,7 +201,7 @@ namespace WindowManager.Droid
 		{
 			get
 			{
-				if (!(ContextHelper.Current is MainActivity currentActivity))
+				if (!(ContextHelper.Current is INativeFoldableActivityProvider currentActivity))
 				{
 					throw new InvalidOperationException("The API was called too early in the application lifecycle");
 				}
@@ -221,9 +213,9 @@ namespace WindowManager.Droid
         public bool IsOccluding
         {
 			get {
-				if (ContextHelper.Current is MainActivity currentActivity)
+				if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity)
 				{
-					return currentActivity.FoldOcclusionType == AndroidX.Window.Layout.FoldingFeatureOcclusionType.Full;
+					return true; // HACK: currentActivity.FoldOcclusionType == AndroidX.Window.Layout.FoldingFeatureOcclusionType.Full;
 				}
 
 				return false;
@@ -233,9 +225,9 @@ namespace WindowManager.Droid
         public bool IsFlat {
 			get
 			{
-				if (ContextHelper.Current is MainActivity currentActivity)
+				if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity)
 				{
-					return currentActivity.FoldState == AndroidX.Window.Layout.FoldingFeatureState.Flat;
+					return true; // HACK: currentActivity.FoldState == AndroidX.Window.Layout.FoldingFeatureState.Flat;
 				}
 
 				return true;
@@ -246,9 +238,9 @@ namespace WindowManager.Droid
 		{
 			get
 			{
-				if (ContextHelper.Current is MainActivity currentActivity)
+				if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity)
 				{
-					return currentActivity.FoldOrientation == AndroidX.Window.Layout.FoldingFeatureOrientation.Vertical;
+					return currentActivity.IsFoldVertical; // == AndroidX.Window.Layout.FoldingFeatureOrientation.Vertical;
 				}
 
 				return true;
@@ -258,7 +250,7 @@ namespace WindowManager.Droid
         public Rect Bounds
         {
 			get {
-				if (ContextHelper.Current is MainActivity currentActivity && currentActivity.FoldBounds != null)
+				if (ContextHelper.Current is INativeFoldableActivityProvider currentActivity && currentActivity.FoldBounds != null)
 				{
 					return new Rect(currentActivity.FoldBounds.Left,
 						currentActivity.FoldBounds.Top,

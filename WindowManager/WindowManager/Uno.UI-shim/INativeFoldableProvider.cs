@@ -2,7 +2,7 @@
 using Windows.UI.ViewManagement;
 using Windows.Foundation;
 
-namespace WindowManager
+namespace Windows.UI.ViewManagement
 {
     /// <summary>
     /// Exposes Jetpack Window Manager fold information (Bounds, OcclusionType, State, Orientation)
@@ -38,5 +38,7 @@ namespace WindowManager
         /// false=FoldingFeatureOrientation.Horizontal
         /// </summary>
         bool IsVertical { get; }
+
+        
     }
 }
