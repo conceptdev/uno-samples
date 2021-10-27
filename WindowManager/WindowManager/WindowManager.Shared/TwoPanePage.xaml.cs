@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -29,6 +30,12 @@ namespace WindowManager
 
         void MainPage_Click(object sender, RoutedEventArgs e)
         {
+            //IApplicationViewSpanningRects _foldable;
+            //if (Uno.Foundation.Extensibility.ApiExtensibility.CreateInstance<IApplicationViewSpanningRects>(this, out var extension))
+            //{
+            //    _foldable = extension;
+            //}
+
             Frame.Navigate(typeof(MainPage)); // TODO: go 'back'?
         }
     }

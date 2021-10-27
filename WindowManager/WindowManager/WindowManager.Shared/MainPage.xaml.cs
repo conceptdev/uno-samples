@@ -28,11 +28,11 @@ namespace WindowManager
     public sealed partial class MainPage : Page
     {
         INativeFoldableProvider _foldable;
-        INativeFoldableActivityProvider _foldableActivity;
-        bool isFoldable = false;
+        IApplicationViewSpanningRects temp;
+        //bool isFoldable = false;
 
         private HingeAngleSensor _hinge;
-        private bool _readingChangedAttached;
+        //private bool _readingChangedAttached;
         private double _angle;
         private string _timestamp;
         
@@ -41,16 +41,13 @@ namespace WindowManager
         {
             this.InitializeComponent();
 
-            Loaded += PageLoaded;
-
-            if (Uno.UI.ContextHelper.Current is INativeFoldableActivityProvider currentActivity) {
-                _foldableActivity = (INativeFoldableActivityProvider)currentActivity;
-                _foldableActivity.LayoutChanged += async (sender, newLayout) =>
-                {
-                    _foldable = newLayout;
-                    RecalculateRects(); // re-display info on screen
-                };
+            //IApplicationViewSpanningRects temp;
+            if (ApiExtensibility.CreateInstance<IApplicationViewSpanningRects>(this, out temp))
+            {
+                _foldable = temp as INativeFoldableProvider;
             }
+            
+            Loaded += PageLoaded;
         }
 
         async void PageLoaded(object sender, RoutedEventArgs e)
@@ -83,16 +80,21 @@ namespace WindowManager
         protected override void OnSizeChanged(int w, int h, int oldw, int oldh)
         {
             base.OnSizeChanged(w, h, oldw, oldh);
-
-            if (ApiExtensibility.CreateInstance<INativeFoldableProvider>(this, out _foldable))
-            {
-                isFoldable = true;
-            }
-            else
-            {
-                isFoldable = false;
-            }
-
+            //IApplicationViewSpanningRects
+            //INativeFoldableProvider
+            //if (_foldable is null)
+            //{
+            //    IApplicationViewSpanningRects temp;
+            //    if (ApiExtensibility.CreateInstance<IApplicationViewSpanningRects>(this, out temp))
+            //    {
+            //        _foldable = temp as INativeFoldableProvider;
+            //        isFoldable = true;
+            //    }
+            //    else
+            //    {
+            //        isFoldable = false;
+            //    }
+            //}
             RecalculateRects();
         }
         private async void RecalculateRects()
@@ -115,11 +117,9 @@ namespace WindowManager
                     {
                         text.Text += rect.ToString() + "\n";
                     }
-                    if (isFoldable) {
-                        text.Text += "Occluding: " + _foldable.IsOccluding + "\n";
-                        text.Text += "Flat: " + _foldable.IsFlat + "\n";
-                        text.Text += "Vertical: " + _foldable.IsVertical + "\n";
-                    }
+                    text.Text += "Occluding: " + _foldable.IsOccluding + "\n";
+                    text.Text += "Flat: " + _foldable.IsFlat + "\n";
+                    text.Text += "Vertical: " + _foldable.IsVertical + "\n";
                 });
             }
 #endif

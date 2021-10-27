@@ -60,8 +60,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Uno.UI" Version="3.9.7" />
-    <PackageReference Include="Uno.UI.RemoteControl" Version="3.9.7" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.UI" Version="4.0.0-PullRequest-7365-35330-7365" />
+    <PackageReference Include="Uno.UI.DualScreen">
+      <Version>255.255.255.255</Version>
+    </PackageReference>
+    <PackageReference Include="Uno.UI.RemoteControl" Version="4.0.0-PullRequest-7365-35330-7365" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.33" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
@@ -90,12 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Styles.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Uno.UI.Foldable\Uno.UI.Foldable.csproj">
-      <Project>{36161BAF-7A30-4E92-9924-7A5F176DAE6D}</Project>
-      <Name>Uno.UI.Foldable</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="..\WindowManager.Shared\WindowManager.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

@@ -9,17 +9,21 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <muxcontrols:TwoPaneView>
+    <muxcontrols:TwoPaneView
+        MinWideModeWidth="300"
+        MinTallModeHeight="300"
+        Pane1Length="350"
+        >
         <muxcontrols:TwoPaneView.Pane1>
-            <Grid Background="Yellow"
-                  Margin="20">
+            <Grid Background="Green"
+                  Margin="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="5*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0"
-                    Text="TwoPaneView.Pane1"
+                    Text="TwoPaneView Pane1"
                     Margin="20"
                     FontSize="30"/>
                 <Button Grid.Row="1"
@@ -27,13 +31,13 @@
             </Grid>
         </muxcontrols:TwoPaneView.Pane1>
         <muxcontrols:TwoPaneView.Pane2>
-            <Grid Background="LightBlue">
+            <Grid Background="Blue">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock 
-                    Text="TwoPaneView.Pane2"
+                    Text="TwoPaneView Pane2"
                     FontSize="30" />
                </Grid>
         </muxcontrols:TwoPaneView.Pane2>
