@@ -1,0 +1,3 @@
+﻿namespace SimpleCalculator.Skia.Gtk
+{
+}
