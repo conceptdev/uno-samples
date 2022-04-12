@@ -34,34 +34,34 @@
      >
         <TwoPaneView.Pane1>
 
-            <Grid>
-        <Ellipse x:Name="ellipse"
-                 Fill="Yellow"
-                 HorizontalAlignment="Left"
-                 VerticalAlignment="Top"
-                 StrokeThickness="0">
+        <Grid>
+            <Ellipse x:Name="ellipse"
+                    Fill="Yellow"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    StrokeThickness="0">
             <Ellipse.RenderTransform>
                 <CompositeTransform x:Name="ellipseTransform" />
             </Ellipse.RenderTransform>
             <Ellipse.Resources>
                 <Storyboard x:Name="themeTransitionStoryboard">
                     <DoubleAnimation Storyboard.TargetName="ellipseTransform"
-                                     Storyboard.TargetProperty="(CompositeTransform.ScaleX)"
-                                     From="0.0"
-                                     To="1.0"
-                                     Duration="0:0:1" />
+                                        Storyboard.TargetProperty="(CompositeTransform.ScaleX)"
+                                        From="0.0"
+                                        To="1.0"
+                                        Duration="0:0:1" />
                     <DoubleAnimation Storyboard.TargetName="ellipseTransform"
-                                     Storyboard.TargetProperty="(CompositeTransform.ScaleY)"
-                                     From="0.0"
-                                     To="1.0"
-                                     Duration="0:0:1" />
+                                        Storyboard.TargetProperty="(CompositeTransform.ScaleY)"
+                                        From="0.0"
+                                        To="1.0"
+                                        Duration="0:0:1" />
                 </Storyboard>
             </Ellipse.Resources>
-        </Ellipse>
-        <Grid x:Name="gridMain"
-              Padding="16"
-              RowSpacing="0"
-              ColumnSpacing="0">
+            </Ellipse>
+            <Grid x:Name="gridMain"
+                Padding="16"
+                RowSpacing="0"
+                ColumnSpacing="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" />
                 <RowDefinition />
@@ -77,29 +77,29 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="CurrentCalculation"
-                       FontSize="22"
-                       Foreground="Black"
-                       TextWrapping="NoWrap"
-                       Grid.ColumnSpan="4"
-                       TextAlignment="Center"
-                       HorizontalTextAlignment="Right"
-                       Text="2 x 4"
-                       Grid.Row="0" />
+                        FontSize="22"
+                        Foreground="Black"
+                        TextWrapping="NoWrap"
+                        Grid.ColumnSpan="4"
+                        TextAlignment="Center"
+                        HorizontalTextAlignment="Right"
+                        Text="2 x 4"
+                        Grid.Row="0" />
 
             <TextBlock x:Name="resultText"
-                       FontSize="64"
-                       FontWeight="Bold"
-                       Text="0"
-                       HorizontalTextAlignment="Right"
-                       VerticalAlignment="Bottom"
-                       TextWrapping="NoWrap"
-                       Grid.ColumnSpan="4" />
+                        FontSize="64"
+                        FontWeight="Bold"
+                        Text="0"
+                        HorizontalTextAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        TextWrapping="NoWrap"
+                        Grid.ColumnSpan="4" />
 
             <Border Background="Black"
                     Height="1"
-                     Grid.Row="0"
-                     VerticalAlignment="Bottom"
-                     Grid.ColumnSpan="4" />
+                        Grid.Row="0"
+                        VerticalAlignment="Bottom"
+                        Grid.ColumnSpan="4" />
 
             <Button Content="C"
                     Grid.Row="1"
@@ -194,8 +194,8 @@
                     HorizontalAlignment="Stretch"
                     Background="Transparent"
                     Grid.ColumnSpan="4" />
-        </Grid>
-    </Grid>
+            </Grid>
+            </Grid>
 
         </TwoPaneView.Pane1>
         <TwoPaneView.Pane2>

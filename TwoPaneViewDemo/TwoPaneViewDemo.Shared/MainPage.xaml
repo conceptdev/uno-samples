@@ -1,0 +1,65 @@
+﻿<Page
+    x:Class="TwoPaneViewDemo.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TwoPaneViewDemo"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"    
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <TwoPaneView x:Name="TwoPane"
+        Background="LightGray"
+        MinTallModeHeight="680"
+        MinWideModeWidth="540"
+        Pane1Length="*"
+        Pane2Length="*"
+    >
+        <TwoPaneView.Pane1>
+            <StackPanel Orientation="Vertical">
+                <TextBlock>Screensize</TextBlock>
+                <TextBlock>Hinge</TextBlock>
+                <TextBlock>MinTallModeHeight</TextBlock>
+	            <Slider x:Name="MinTallModeHeight"
+			            Value="680"
+			            Minimum="0"
+			            Maximum="2000" 
+                        ValueChanged="MinTallModeHeight_ValueChanged" />
+                <TextBlock>MinWideModeWidth</TextBlock>
+	            <Slider x:Name="MinWideModeWidth"
+			            Value="540"
+			            Minimum="0"
+			            Maximum="2000"
+                        ValueChanged="MinWideModeWidth_ValueChanged"/>
+                <TextBlock>Pane1Length</TextBlock>
+	            <Slider x:Name="Pane1Length"
+			            Value="0.5"
+			            Minimum="0"
+			            Maximum="1" 
+                        StepFrequency="0.1"
+                        TickFrequency="0.1"
+                        ValueChanged="Pane1Length_ValueChanged" />
+                <TextBlock>Pane2Length</TextBlock>
+	            <Slider x:Name="Pane2Length"
+			            Value="0.5"
+			            Minimum="0"
+			            Maximum="1"
+                        StepFrequency="0.1"
+                        TickFrequency="0.1"
+                        ValueChanged="Pane2Length_ValueChanged" />
+                <ComboBox x:Name="PanePriority" 
+                          SelectionChanged="PanePriority_SelectionChanged" />
+                <ComboBox x:Name="TallModeConfiguration" 
+                          SelectionChanged="TallModeConfiguration_SelectionChanged" />
+                <ComboBox x:Name="WideModeConfiguration" 
+                          SelectionChanged="WideModeConfiguration_SelectionChanged" />
+            </StackPanel>
+        </TwoPaneView.Pane1>
+        <TwoPaneView.Pane2>
+            <StackPanel>
+                <TextBlock>Pane2</TextBlock>
+                <Button x:Name="Reset" Content="Reset" Click="Reset_Click" />
+            </StackPanel>
+        </TwoPaneView.Pane2>
+    </TwoPaneView>
+</Page>
