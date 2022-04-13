@@ -18,7 +18,8 @@
         <TwoPaneView.Pane1>
             <StackPanel Orientation="Vertical"
                         Background="LightBlue"
-                        Margin="10">
+                        Margin="10"
+                        Padding="5">
                 <TextBlock>Screensize</TextBlock>
                 <TextBlock>Hinge</TextBlock>
                 <TextBlock>MinTallModeHeight</TextBlock>
@@ -57,8 +58,9 @@
             </StackPanel>
         </TwoPaneView.Pane1>
         <TwoPaneView.Pane2>
-            <StackPanel Background="Green">
-                <TextBlock Color="White">Pane2 StackPanel</TextBlock>
+            <StackPanel Background="Green"
+                        Padding="20">
+                <TextBlock Foreground="White">Pane2 StackPanel</TextBlock>
                 <Button x:Name="Reset2" Content="Reset" Click="Reset_Click" />
             </StackPanel>
         </TwoPaneView.Pane2>
