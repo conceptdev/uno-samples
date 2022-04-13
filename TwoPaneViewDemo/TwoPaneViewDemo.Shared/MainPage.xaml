@@ -9,14 +9,16 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <TwoPaneView x:Name="TwoPane"
-        Background="LightGray"
+        Background="White"
         MinTallModeHeight="680"
         MinWideModeWidth="540"
         Pane1Length="*"
         Pane2Length="*"
     >
         <TwoPaneView.Pane1>
-            <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Vertical"
+                        Background="LightBlue"
+                        Margin="10">
                 <TextBlock>Screensize</TextBlock>
                 <TextBlock>Hinge</TextBlock>
                 <TextBlock>MinTallModeHeight</TextBlock>
@@ -37,7 +39,6 @@
 			            Minimum="0"
 			            Maximum="1" 
                         StepFrequency="0.1"
-                        TickFrequency="0.1"
                         ValueChanged="Pane1Length_ValueChanged" />
                 <TextBlock>Pane2Length</TextBlock>
 	            <Slider x:Name="Pane2Length"
@@ -45,7 +46,6 @@
 			            Minimum="0"
 			            Maximum="1"
                         StepFrequency="0.1"
-                        TickFrequency="0.1"
                         ValueChanged="Pane2Length_ValueChanged" />
                 <ComboBox x:Name="PanePriority" 
                           SelectionChanged="PanePriority_SelectionChanged" />
@@ -53,12 +53,13 @@
                           SelectionChanged="TallModeConfiguration_SelectionChanged" />
                 <ComboBox x:Name="WideModeConfiguration" 
                           SelectionChanged="WideModeConfiguration_SelectionChanged" />
+                <Button x:Name="Reset1" Content="Reset" Click="Reset_Click" />
             </StackPanel>
         </TwoPaneView.Pane1>
         <TwoPaneView.Pane2>
-            <StackPanel>
-                <TextBlock>Pane2</TextBlock>
-                <Button x:Name="Reset" Content="Reset" Click="Reset_Click" />
+            <StackPanel Background="Green">
+                <TextBlock Color="White">Pane2 StackPanel</TextBlock>
+                <Button x:Name="Reset2" Content="Reset" Click="Reset_Click" />
             </StackPanel>
         </TwoPaneView.Pane2>
     </TwoPaneView>

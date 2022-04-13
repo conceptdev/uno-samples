@@ -48,11 +48,11 @@ namespace TwoPaneViewDemo
         }
         void Pane1Length_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            //TwoPane.Pane1Length = new GridLength(e.NewValue);
+            TwoPane.Pane1Length = new GridLength(e.NewValue, GridUnitType.Star);
         }
         void Pane2Length_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            //TwoPane.Pane2Length = new GridLength (e.NewValue);
+            TwoPane.Pane2Length = new GridLength (e.NewValue, GridUnitType.Star);
         }
 
         void PanePriority_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -72,9 +72,16 @@ namespace TwoPaneViewDemo
 
         void Reset_Click (object sender, RoutedEventArgs e)
         {
+            TwoPane.MinTallModeHeight = 680;
+            TwoPane.MinWideModeWidth = 540;
+
             TwoPane.PanePriority = TwoPaneViewPriority.Pane1;
             Pane1Length.Value = 0.5;
             Pane2Length.Value = 0.5;
+
+            PanePriority.SelectedIndex = 0;
+            TallModeConfiguration.SelectedIndex = 1;
+            WideModeConfiguration.SelectedIndex = 1;
         }
     }
 }

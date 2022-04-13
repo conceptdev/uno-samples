@@ -1,0 +1,9 @@
+# TwoPaneView Demo
+
+`TwoPaneView` control provides a split-view layout that can be sized using pixel values, proportional settings, or by adapting to a foldable device like Microsoft Surface Duo.
+
+Example on Windows:
+
+![Windows example of Uno.UI.Foldable TwoPaneView control](screenshot-TwoPaneViewDemo.png)
+
+On Android, include the **Uno.UI.Foldable** NuGet in your project to add the foldable-detection behavior, otherwise it will layout according to the pixel/proportional settings in code.
